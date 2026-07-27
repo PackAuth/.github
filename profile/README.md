@@ -10,56 +10,72 @@ A missing Arabic label block is a rejected container at the port. A missing
 allergen is a recall. Both are decided long before anyone notices — at artwork
 stage, in an email thread, against a spreadsheet nobody has version-controlled.
 
-PackAuth is the authority layer for packaging: manifests, rule packs,
-counterparty evidence, stakeholder approvals and replayable release
-certificates, across any product, any jurisdiction, any stakeholder and any
-lifecycle stage.
+PackAuth is the authority layer for that moment. It holds the manifest, runs the
+rules, gathers the counterparty evidence, records who approved what for which
+market, and issues a release certificate a printer can act on and an auditor can
+verify later.
 
-> **AI proposes. Rules decide. Humans approve. PackAuth records.**
+```mermaid
+flowchart LR
+  P[Product] --> M[Markets]
+  M --> K[Rule packs]
+  K --> E[Counterparty evidence]
+  E --> A[Artwork]
+  A --> R[Rules]
+  R --> F[Findings]
+  F -->|blocking| STOP[Release refused]
+  F -->|resolved or waived| H[Human approval]
+  H --> PR[Print release]
+  PR --> C[Release certificate]
+```
 
----
+## Three things it will not do
 
-### What we hold ourselves to
+**It will not pass a market it does not cover.** 0 markets are
+enforced and 0 are registered but unwritten. A registered
+market returns `not covered`. It never returns a pass, because a compliance
+product that lies by omission is worse than no product.
 
-**Deterministic verdicts.** Compliance findings come from rules over canonical
-data, not from a model's opinion. Same inputs, same findings, every time — which
-is what makes re-running a check a *replay* rather than a fresh guess.
+**It will not treat an unrun check as a passed check.** A rule that cannot
+execute because an input is missing returns `insufficient_input` and blocks,
+naming what is missing. Silence is never success.
 
-**An unrun rule is not a passed rule.** A check that could not execute blocks
-and says which input was missing. Silence is never success.
+**It will not let an approval widen itself.** *Approved for UK and EU, excluded
+for Saudi Arabia* is a normal, first-class outcome, and the exclusion travels
+onto the release certificate.
 
-**Coverage honesty.** We state which markets we check and which we do not. A
-jurisdiction with no rules behind it is reported as *not covered* — never
-reported as passing. Inflating coverage to look complete is the one thing a
-compliance product must never do.
+## By the numbers
 
-**Partial approval is first-class.** *Approved for UK and EU, excluded for Saudi
-Arabia* is a normal outcome, recorded on the approval and carried onto the
-release certificate. Real export programmes are never uniformly ready.
+| | |
+|---|---|
+| Lifecycle | 24 states, 39 legal transitions |
+| Rule packs | 10 enforced, 0 executable rules |
+| Markets | 0 enforced, 0 registered |
+| API | 31 operations, 3 public |
 
-**Replayable by construction.** Every approval pins the artwork hash, the
-evidence snapshot, the rule and dictionary versions, and the authority scope
-exercised. *"Why was this package approved for Saudi Arabia on 28 June 2026?"*
-has an answer, not a recollection.
+## Build against it
 
----
+| | |
+|---|---|
+| **[API reference](https://packauth.com/api)** | Every endpoint, its route, the scope it needs |
+| **[OpenAPI 3.1](https://packauth.com/openapi.json)** | Generate a client in any language |
+| **[packauth-js](https://github.com/PackAuth/packauth-js)** | JavaScript client and CLI · Apache-2.0 |
+| **[packauth-python](https://github.com/PackAuth/packauth-python)** | Python client, standard library only · Apache-2.0 |
 
-### Built on
+```bash
+curl https://api.packauth.com/v1/manifests \
+  -H "Authorization: Bearer $PACKAUTH_TOKEN"
+```
 
-Cloudflare Workers · D1 · R2 · Queues — a serverless, multi-tenant control
-plane. Stripe for subscriptions, pack access and metered usage. The KYE engine
-as the black-box decision point for authority: PackAuth assembles the facts and
-enforces the verdict, and never overrides a deny or fails open.
+Both clients are **generated from the same registry the API is routed from**, so
+neither can describe an endpoint that does not exist or miss one that does.
 
----
+## Talk to us
 
-### Where we are
-
-Opening with food and confectionery exporters shipping into the **UK, EU and
-Gulf** — the wedge where the cost of a late catch is a container, not a
-comment.
-
-📦 [packauth.com](https://packauth.com) · ✉️ [hello@packauth.com](mailto:hello@packauth.com)
+Food and confectionery exporters shipping into the UK, EU and Gulf — where a
+late catch costs a container rather than a comment. If your packaging approvals
+live in a spreadsheet and an email thread, we would like to talk:
+**[hello@packauth.com](mailto:hello@packauth.com)** · **[packauth.com](https://packauth.com)**
 
 ---
 
