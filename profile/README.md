@@ -49,9 +49,9 @@ onto the release certificate.
 | | |
 |---|---|
 | Lifecycle | 24 states, 39 legal transitions |
-| Rule packs | 10 enforced, 0 executable rules |
+| Rule packs | 23 enforced, 0 executable rules |
 | Markets | 0 enforced, 0 registered |
-| API | 31 operations, 3 public |
+| API | 72 operations, 4 public |
 
 ## Build against it
 
